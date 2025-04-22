@@ -1,0 +1,181 @@
+// Obtener el canvas y el contexto de dibujo
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// Escala y dimensiones del juego
+const scale = 20; // Tamaño de cada celda
+const rows = canvas.height / scale; // Número de filas
+const columns = canvas.width / scale; // Número de columnas
+
+// Inicialización de la serpiente
+let snake = [
+  { x: 8, y: 10 },
+  { x: 7, y: 10 },
+  { x: 6, y: 10 }
+];
+
+// Dirección de movimiento de la serpiente
+let dx = 1; // Movimiento en el eje X (hacia la derecha)
+let dy = 0; // Movimiento en el eje Y (sin movimiento vertical)
+
+// Inicialización de la comida
+let food = getRandomPosition(); // Posición aleatoria de la comida
+let specialFood = null; // Comida especial
+let specialFoodTimer = 0; // Temporizador de la comida especial
+let score = 0; // Puntaje inicial
+let highScore = 0; // Puntaje más alto
+let foodEaten = 0; // Número de veces que se ha comido comida normal
+const maxSpecialTime = 50; // Duración máxima de la comida especial
+
+// Función para dibujar la serpiente
+function drawSnake() {
+  snake.forEach((segment, index) => {
+    ctx.fillStyle = index === 0 ? '#facc15' : '#38bdf8'; // Amarillo para la cabeza, azul para el resto
+    ctx.fillRect(segment.x * scale, segment.y * scale, scale, scale); // Dibujar cada segmento
+  });
+}
+
+// Función para dibujar la comida normal
+function drawFood() {
+  ctx.fillStyle = '#f43f5e'; // Color rojo para la comida
+  ctx.fillRect(food.x * scale, food.y * scale, scale, scale); // Dibujar el cuadrado de comida
+}
+
+// Función para dibujar la comida especial
+function drawSpecialFood() {
+  if (specialFood) {
+    ctx.fillStyle = '#c084fc'; // Color morado para la comida especial
+    ctx.beginPath();
+    ctx.arc(
+      specialFood.x * scale + scale / 2,
+      specialFood.y * scale + scale / 2,
+      scale / 2,
+      0,
+      Math.PI * 2
+    );
+    ctx.fill(); // Dibujar el círculo
+  }
+}
+
+// Función para mover la serpiente
+function moveSnake() {
+  const head = { x: snake[0].x + dx, y: snake[0].y + dy };
+  head.x = (head.x + columns) % columns; // Permite que la serpiente se desplace a través de los bordes
+  head.y = (head.y + rows) % rows; // Permite que la serpiente se desplace a través de los bordes
+  snake.unshift(head); // Agregar la nueva cabeza a la serpiente
+
+  // Comprobar si la serpiente comió la comida
+  if (head.x === food.x && head.y === food.y) {
+    food = getRandomPosition(); // Generar nueva comida
+    foodEaten++; // Aumentar el contador de comida comida
+    score++; // Aumentar la puntuación
+    updateScore(); // Actualizar la puntuación en la pantalla
+
+    // Si se comieron 3 piezas de comida, generar comida especial
+    if (foodEaten % 3 === 0) {
+      specialFood = getRandomPosition(); // Generar comida especial
+      specialFoodTimer = maxSpecialTime; // Reiniciar el temporizador
+    }
+  } else if (specialFood && head.x === specialFood.x && head.y === specialFood.y) {
+    specialFood = null; // Comer la comida especial
+    specialFoodTimer = 0; // Reiniciar el temporizador de la comida especial
+    score += 5; // Aumentar la puntuación por la comida especial
+    updateScore(); // Actualizar la puntuación
+  } else {
+    snake.pop(); // Eliminar el último segmento de la serpiente
+  }
+}
+
+// Función para actualizar la puntuación en la pantalla
+function updateScore() {
+  document.getElementById('score').textContent = score; // Mostrar el puntaje actual
+  if (score > highScore) {
+    highScore = score; // Actualizar el puntaje más alto
+    document.getElementById('high-score').textContent = highScore; // Mostrar el puntaje más alto
+  }
+}
+
+// Función para actualizar la barra de temporizador de la comida especial
+function updateTimerBar() {
+  const fill = document.getElementById('timer-fill');
+  const label = document.getElementById('timer-seconds');
+  if (specialFood && specialFoodTimer > 0) {
+    const percentage = (specialFoodTimer / maxSpecialTime) * 100; // Calcular el porcentaje del temporizador
+    fill.style.width = percentage + '%'; // Ajustar el ancho de la barra
+    label.textContent = (specialFoodTimer * 0.15).toFixed(1) + 's'; // Mostrar el tiempo restante
+  } else {
+    fill.style.width = '0%'; // Si no hay comida especial, la barra está vacía
+    label.textContent = '0s'; // Mostrar '0s'
+  }
+}
+
+// Función para generar una posición aleatoria en el canvas
+function getRandomPosition() {
+  return {
+    x: Math.floor(Math.random() * columns), // Generar coordenada X aleatoria
+    y: Math.floor(Math.random() * rows) // Generar coordenada Y aleatoria
+  };
+}
+
+// Función para comprobar si la serpiente se ha chocado consigo misma
+function checkCollision() {
+  const head = snake[0];
+  for (let i = 1; i < snake.length; i++) {
+    if (head.x === snake[i].x && head.y === snake[i].y) return true; // Si la cabeza choca con algún segmento, es un choque
+  }
+  return false; // No hay choque
+}
+
+// Función principal del juego que se ejecuta en cada intervalo
+function gameLoop() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas
+  drawSnake(); // Dibujar la serpiente
+  drawFood(); // Dibujar la comida
+  drawSpecialFood(); // Dibujar la comida especial
+  moveSnake(); // Mover la serpiente
+  updateTimerBar(); // Actualizar la barra del temporizador
+
+  if (checkCollision()) {
+    alert('¡Perdiste! Tu puntuación fue: ' + score); // Si hay colisión, fin del juego
+    resetGame(); // Resetear el juego
+  }
+
+  // Reducir el temporizador de la comida especial
+  if (specialFood) {
+    specialFoodTimer--;
+    if (specialFoodTimer <= 0) {
+      specialFood = null; // Desaparecer la comida especial cuando se acaba el tiempo
+    }
+  }
+}
+
+// Función para reiniciar el juego
+function resetGame() {
+  snake = [
+    { x: 8, y: 10 },
+    { x: 7, y: 10 },
+    { x: 6, y: 10 }
+  ]; // Resetear la serpiente a su posición inicial
+  dx = 1; // Dirección inicial (hacia la derecha)
+  dy = 0; // Dirección inicial (sin movimiento vertical)
+  food = getRandomPosition(); // Generar nueva comida
+  specialFood = null; // No hay comida especial
+  specialFoodTimer = 0; // Temporizador de comida especial a 0
+  score = 0; // Puntaje a 0
+  foodEaten = 0; // Comida comida a 0
+  updateScore(); // Actualizar puntuación
+  updateTimerBar(); // Actualizar barra de temporizador
+}
+
+// Evento para cambiar la dirección de la serpiente con las teclas del teclado
+window.addEventListener('keydown', e => {
+  switch (e.key) {
+    case 'ArrowUp': if (dy === 0) { dx = 0; dy = -1; } break; // Mover hacia arriba
+    case 'ArrowDown': if (dy === 0) { dx = 0; dy = 1; } break; // Mover hacia abajo
+    case 'ArrowLeft': if (dx === 0) { dx = -1; dy = 0; } break; // Mover hacia la izquierda
+    case 'ArrowRight': if (dx === 0) { dx = 1; dy = 0; } break; // Mover hacia la derecha
+  }
+});
+
+// Ejecutar la función principal cada 150ms (juego en tiempo real)
+setInterval(gameLoop, 150);
