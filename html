@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" /> <!-- Codificación de caracteres -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+</head>
+<body>
+  <div class= "game-container"> 
+    <h1 class="main-title">Semana Tech 2025</h1>
+    <h2>Tec de software</h2>
+    <h3>Realizado por Ing. Josué</h3>
+    <div class="scoreboard">
+      <span>Score: <span id="score">0</span></span>
+      <span>High Score: <span id="high-score">0</span></span>
+    </div>
+    <!-- Canvas donde se dibuja el juego -->
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <!-- Barra de temporizador -->
+    <div id="timer-bar">
+      <div id="timer-fill"></div>
+      <div id="timer-seconds">0s</div>
+    </div>
+  </div>
+  <script src="script.js"></script> <!-- Enlace al archivo JS que contiene la lógica del juego -->
+</body>
+</html>
