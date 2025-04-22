@@ -1,0 +1,84 @@
+/* Estilo general de la página, centrando el contenido */
+body {
+    background: #e0f2fe; /* Color de fondo suave */
+    display: flex; /* Usamos Flexbox para centrar el contenido */
+    justify-content: center; /* Centrado horizontal */
+    align-items: center; /* Centrado vertical */
+    height: 100vh; /* Altura completa de la pantalla */
+    margin: 0; /* Eliminar márgenes predeterminados */
+    font-family: 'Segoe UI', sans-serif; /* Fuente moderna */
+  }
+  
+  /* Estilo para el contenedor principal del juego */
+  .game-container {
+    background: #1e40af; /* Color de fondo azul oscuro */
+    padding: 1rem; /* Relleno alrededor del contenido */
+    border-radius: 1.5rem; /* Bordes redondeados */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Sombra para darle profundidad */
+    text-align: center; /* Centrar texto */
+    width: 420px; /* Ancho fijo */
+  }
+  
+  /* Estilo para el canvas donde se dibuja el juego */
+  canvas {
+    background: #0f172a; /* Color de fondo oscuro */
+    border-radius: 1rem; /* Bordes redondeados */
+    display: block; /* Para que el canvas sea un bloque y se centre */
+    margin: 0 auto; /* Centrado automático */
+  }
+  
+  /* Estilo para el marcador de puntuación */
+  .scoreboard {
+    color: white; /* Color blanco */
+    font-size: 1rem; /* Tamaño de fuente */
+    margin-bottom: 1rem; /* Separación inferior */
+    display: flex; /* Flexbox para distribuir elementos */
+    justify-content: space-between; /* Espaciado entre los elementos */
+    width: 100%; /* Ancho completo */
+    max-width: 400px; /* Ancho máximo */
+    margin: 0 auto 1rem auto; /* Centrado y espaciado */
+  }
+  
+  /* Estilo para la barra de temporizador */
+  #timer-bar {
+    width: 100%; /* Ancho completo */
+    height: 10px; /* Altura de la barra */
+    background-color: #e5e7eb; /* Color de fondo gris claro */
+    border-radius: 5px; /* Bordes redondeados */
+    overflow: hidden; /* Esconde cualquier contenido fuera del borde */
+    margin-top: 1rem; /* Separación superior */
+    position: relative; /* Posicionamiento relativo para posicionar los segundos */
+  }
+  
+  /* Estilo para el relleno de la barra de temporizador */
+  #timer-fill {
+    height: 100%; /* Relleno al 100% de la altura */
+    background-color: #c084fc; /* Color morado */
+    width: 0%; /* Relleno inicial en 0% */
+    transition: width 0.15s linear; /* Transición suave en el cambio de ancho */
+  }
+  
+  /* Estilo para los segundos del temporizador */
+  #timer-seconds {
+    position: absolute; /* Posicionamiento absoluto para mover el texto */
+    right: 10px; /* Separación desde la derecha */
+    top: -25px; /* Separación desde arriba */
+    color: white; /* Color blanco */
+    font-size: 0.9rem; /* Tamaño de fuente */
+    font-weight: bold; /* Negrita */
+    font-family: monospace; /* Fuente monoespaciada */
+  }
+  
+  /* Estilo para el título principal */
+  .main-title {
+    color: #facc15; /* Color amarillo */
+    font-size: 2rem; /* Tamaño de fuente grande */
+    margin: 0.5rem 0 0; /* Espaciado superior e inferior */
+  }
+  
+  /* Estilo para el subtítulo */
+  .subtitle {
+    color: white; /* Color blanco */
+    font-size: 1.2rem; /* Tamaño de fuente */
+    margin-bottom: 1rem; /* Espaciado inferior */
+  }
